@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://thymeleaf.org ">
+<head>
+  <meta charset="UTF-8">
+  <title>All users</title>
+</head>
+<body>
+<h1>All users</h1>
+<table border="1" cellspacing="0">
+  <thead>
+  <tr>
+    <th>Login</th>
+    <th>Password</th>
+    <th>Role</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${userList}">
+    <td th:text="${user.getUsername()}">Username</td>
+    <td th:text="${user.getPassword()}">Password</td>
+    <td><a th:if="${user.getRoles().contains(roleUser)}" th:text="U "></a>
+      <a th:if="${user.getRoles().contains(roleAdmin)}" th:text="A"></a>
+    </td>
+    <td>
+      <a th:href="@{/admin/{id}(id=${user.getId()})}">
+        <input type="button" value="DETAILS"/>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<h4>
+  <a href="/admin/createUser">
+    <input type="button" value="Add new user">
+  </a>
+</h4>
+<form th:method="POST" th:action="@{/logout}">
+  <button type="submit">Log Out</button>
+</form>
+</body>
+</html>
