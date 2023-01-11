@@ -1,11 +1,11 @@
-package ru.kata.spring.boot_security.demo.controllers;
+package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.services.RoleService;
-import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,15 +25,16 @@ public class AdminController {
         model.addAttribute("roleAdmin", roleService.getRoleByName("ROLE_ADMIN"));
         return "adminPage";
     }
+
     @GetMapping("/{id}")
     public String showUserInfoPage(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.showUserById(id));
+        model.addAttribute("user", userService.getUserById(id));
         return "userPage";
     }
 
     @GetMapping("/{id}/edit")
     public String showEditUserPage(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.showUserById(id));
+        model.addAttribute("user", userService.getUserById(id));
         model.addAttribute("roleUser", roleService.getRoleByName("ROLE_USER"));
         model.addAttribute("roleAdmin", roleService.getRoleByName("ROLE_ADMIN"));
         return "editUser";
@@ -46,7 +47,7 @@ public class AdminController {
     }
 
     @GetMapping("/createUser")
-    public String showCreateUserPage(Model model) {
+    public String getCreateUserPage(Model model) {
         model.addAttribute("user", new User());
         return "createUser";
     }
