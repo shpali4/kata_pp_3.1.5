@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,20 +22,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> listOfUsers() {
+    public List<User> getListOfUsers() {
         return userRepository.findAll();
     }
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.getById(id);
     }
 
     @Override
     @Transactional
     public void updateUser(User user) {
         if (user.getPassword().isEmpty()) {
-            user.setPassword(userRepository.findById(user.getId()).get().getPassword());
+            user.setPassword(getUserById(user.getId()).getPassword());
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
@@ -54,15 +53,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void saveNewUser(User user) {
-       if (userRepository.findByUsername(user.getUsername()) == null) {
+       if (userRepository.findUserByEmail(user.getEmail()) == null) {
            user.setPassword(passwordEncoder.encode(user.getPassword()));
            userRepository.save(user);
        }
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("Incorrect username");
         }
