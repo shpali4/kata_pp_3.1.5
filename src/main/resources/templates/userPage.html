@@ -15,7 +15,7 @@
             <a class="navbar-brand"><span class="fw-bolder" th:text="${userView.email}"></span>
                 <span> with roles: </span>
                 <th:block th:each="role : ${userView.roles}"
-                    th:utext="${#strings.substringAfter(role.name, 'ROLE_')}">
+                    th:utext="${#strings.substringAfter(role.name, 'ROLE_') + ' '}">
                 </th:block>
             </a>
         </div>
@@ -29,6 +29,11 @@
     <div class="col-2 pt-3 g-0">
         <!--LEFT MENU-->
         <ul class="nav nav-pills flex-column">
+            <div th:if="${userView.getRoles().contains(roleAdmin)}">
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" th:href="@{/admin}" style="padding-left:25px">Admin</a>
+            </li>
+            </div>
             <li class="nav-item">
                 <a class="nav-link active" th:href="@{/user}" style="padding-left:25px">User</a>
             </li>

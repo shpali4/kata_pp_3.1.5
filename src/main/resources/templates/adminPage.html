@@ -15,7 +15,7 @@
             <a class="navbar-brand"><span class="fw-bolder" th:text="${principalUser.email}"></span>
                 <span> with roles: </span>
                 <th:block th:each="role : ${principalUser.roles}"
-                    th:utext="${#strings.substringAfter(role.name, 'ROLE_')}">
+                    th:utext="${#strings.substringAfter(role.name, 'ROLE_') + ' '}">
                 </th:block>
             </a>
         </div>
