@@ -6,10 +6,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -34,13 +38,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateUser(User user) {
-        if (user.getPassword().isEmpty()) {
-            user.setPassword(getUserById(user.getId()).getPassword());
-        } else {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void updateUser(User updatedUser, Long id) {
+        User userForUpdate = userRepository.findById(id).orElse(null);
+        updatedUser.setId(id);
+        assert userForUpdate != null;
+        if (updatedUser.getRoles().isEmpty()) {
+            updatedUser.setRoles(userForUpdate.getRoles());
         }
-        userRepository.save(user);
+        if (updatedUser.getPassword().isEmpty()) {
+            updatedUser.setPassword(userForUpdate.getPassword());
+        } else {
+            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+        userRepository.save(updatedUser);
     }
 
     @Override
@@ -54,6 +64,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void saveNewUser(User user) {
+        if (user.getRoles() == null) {
+            Set<Role> roleSet = new HashSet<>();
+            roleSet.add(new Role(1L, "USER"));
+            user.setRoles(roleSet);
+        }
        if (userRepository.findUserByEmail(user.getEmail()) == null) {
            user.setPassword(passwordEncoder.encode(user.getPassword()));
            userRepository.save(user);
