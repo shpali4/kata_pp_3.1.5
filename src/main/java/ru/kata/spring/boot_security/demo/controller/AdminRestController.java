@@ -23,12 +23,12 @@ public class AdminRestController {
     }
 
     @GetMapping("/principal")
-    public ResponseEntity<User> userPage(Principal principal) {
+    public ResponseEntity<User> getUserPage(Principal principal) {
         return new ResponseEntity<>(userService.loadUserByUsername(principal.getName()), HttpStatus.OK);
     }
 
     @GetMapping("/allUsers")
-    public ResponseEntity<List<User>> allUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getListOfUsers();
         return users != null && !users.isEmpty()
                 ? new ResponseEntity<>(users, HttpStatus.OK)
@@ -36,8 +36,11 @@ public class AdminRestController {
     }
 
     @GetMapping("/user/{id}")
-    public User getUser(@PathVariable(name = "id") Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return user != null
+                ? new ResponseEntity<>(user, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/user/{id}")

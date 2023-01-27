@@ -78,7 +78,7 @@ async function getEditModalData(id) {
         await getData("/api/allRoles").then((data) => {
             data.forEach(role => {
                 formEdit.selectRoles.options[i] = new Option();
-                formEdit.selectRoles.options[i].text = role.name.replace('ROLE_', '');
+                formEdit.selectRoles.options[i].text = role.name;
                 formEdit.selectRoles.options[i].value = role.id;
                 i++;
             })
